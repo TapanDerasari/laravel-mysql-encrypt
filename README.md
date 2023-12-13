@@ -100,6 +100,7 @@ Custom Local scopes available:
 `orWhereEncrypted`
 `orWhereNotEncrypted`
 `orderByEncrypted`
+`whereEncryptedLike`
 
 Global scope `DecryptSelectScope` automatically booted in models using `Encryptable` trait.
 
