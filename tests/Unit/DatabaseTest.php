@@ -33,7 +33,13 @@ it('can query encrypted data', function () {
     $this->assertCount(1, Testing::query()->whereEncrypted('value', 'testing string')->get());
 });
 
-it('can query encrypted datas', function () {
+it('can match Sql syntex', function () {
     $query = Testing::query()->whereEncrypted('value', 'testing string')->toSql();
+    echo PHP_EOL . $query . PHP_EOL;
     expect($query)->toMatch('/(AES_DECRYPT\(([^\)]+)\))/');
+});
+
+it('can search encrypted data', function () {
+    dd(Testing::query()->whereEncryptedLike('value', 'hello')->first());
+    $this->assertCount(1, Testing::query()->whereEncryptedLike('value', 'hello')->get());
 });
