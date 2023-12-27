@@ -39,7 +39,7 @@ APP_AESENCRYPT_KEY=yourencryptionkey
 
 namespace App;
 
-use DanielPardamean\MysqlEncrypt\Traits\Encryptable;
+use TapanDerasari\MysqlEncrypt\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
