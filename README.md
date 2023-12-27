@@ -26,29 +26,7 @@ mkdir -p config
 cp vendor/tapanderasari/laravel-mysql-encrypt/config/config.php config/mysql-encrypt.php
 ```
 
-### 3. Configure Provider
-
-`Laravel`
-
-- For Laravel 5.5 or later, the service provider is automatically loaded, skip this step.
-
-- For Laravel 5.4 or earlier, add the following to `config/app.php`:
-
-```php
-'providers' => array(
-    TapanDerasari\\MysqlEncrypt\\Providers\\LaravelServiceProvider::class
-);
-```
-
-`Lumen`
-
-- For Lumen, add the following to `bootstrap/app.php`:
-
-```php
-$app->register(TapanDerasari\MysqlEncrypt\Providers\LumenServiceProvider::class);
-```
-
-### 4. Set encryption key in `.env` file
+### 3. Set encryption key in `.env` file
 
 ```
 APP_AESENCRYPT_KEY=yourencryptionkey
@@ -101,6 +79,7 @@ Custom Local scopes available:
 `orWhereNotEncrypted`
 `orderByEncrypted`
 `whereEncryptedLike`
+`scopeOrderByEncryptedSort`
 
 Global scope `DecryptSelectScope` automatically booted in models using `Encryptable` trait.
 
@@ -125,4 +104,4 @@ DB::statement('ALTER TABLE `users` ADD `telephone` VARBINARY(50)');
 ## License
 
 The MIT License (MIT). Please
-see [License File](https://github.com/danielpardamean/laravel-mysql-encrypt/blob/master/LICENSE) for more information.
+see [License File](https://github.com/TapanDerasari/laravel-mysql-encrypt/blob/master/LICENSE) for more information.
