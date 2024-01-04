@@ -100,6 +100,20 @@ DB::statement('ALTER TABLE `users` ADD `last_name` VARBINARY(300)');
 DB::statement('ALTER TABLE `users` ADD `email` VARBINARY(300)');
 DB::statement('ALTER TABLE `users` ADD `telephone` VARBINARY(50)');
 ```
+## Implementing encryption for existing data
+
+For this you can create one command like
+
+```
+php artisan make:command EncryptionForExistingData
+```
+
+In this command you fetch existing table or model data without global scope `DecryptSelectScope`.
+
+You can refer the example, clicking on below example button:
+
+<a href="https://github.com/TapanDerasari/laravel-mysql-encrypt/blob/master/existing_data_encryption.md" target="new"><img src="https://img.shields.io/badge/Example-green"></a>
+
 
 ## License
 
