@@ -1,5 +1,7 @@
 # Laravel/Lumen MySql AES Encrypt/Decrypt
 
+<a href="https://packagist.org/packages/tapanderasari/laravel-mysql-encrypt"><img src="https://img.shields.io/packagist/dt/tapanderasari/laravel-mysql-encrypt" alt="Total Downloads"></a> <a href="https://img.shields.io/packagist/v/tapanderasari/laravel-mysql-encrypt"><img src="https://img.shields.io/packagist/v/tapanderasari/laravel-mysql-encrypt" alt="Latest Stable Version"></a> <a href="https://github.com/TapanDerasari/laravel-mysql-encrypt/blob/master/LICENSE"><img src="https://img.shields.io/packagist/l/tapanderasari/laravel-mysql-encrypt" alt="License"></a>
+
 Laravel/Lumen database encryption at database side using native AES_DECRYPT and AES_ENCRYPT functions.
 Automatically encrypt and decrypt fields in your Models.
 
@@ -100,6 +102,20 @@ DB::statement('ALTER TABLE `users` ADD `last_name` VARBINARY(300)');
 DB::statement('ALTER TABLE `users` ADD `email` VARBINARY(300)');
 DB::statement('ALTER TABLE `users` ADD `telephone` VARBINARY(50)');
 ```
+## Implementing encryption for existing data
+
+For this you can create one command like
+
+```
+php artisan make:command EncryptionForExistingData
+```
+
+In this command you fetch existing table or model data without global scope `DecryptSelectScope`.
+
+You can refer the example, clicking on below Example button:
+
+<a href="https://github.com/TapanDerasari/laravel-mysql-encrypt/blob/master/existing_data_encryption.md" target="new"><img src="https://img.shields.io/badge/Example-green"></a>
+
 
 ## License
 
