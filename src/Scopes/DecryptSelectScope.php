@@ -18,18 +18,16 @@ class DecryptSelectScope implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
+        $columns = $builder->getQuery()->columns;
+
         $encryptable = $model->encryptable();
 
         $columns = empty($columns) ? Schema::getColumnListing($model->getTable()) : $columns;
-
-        if (empty($encryptable) || empty($columns)) {
-            return $builder->addSelect(...$columns);
-        }
 
         $select = collect($columns)->map(function ($column) use ($encryptable) {
             return (in_array($column, $encryptable)) ? db_decrypt($column) : $column;
         });
 
-        return $builder->addSelect(...$select);
+        return $builder->select(...$select);
     }
 }
