@@ -48,7 +48,7 @@ class User extends Model
 {
     use Encryptable; // <-- 1. Include trait
 
-    protected $encryptable = [ // <-- 2. Include columns to be encrypted
+    public array $encryptable = [ // <-- 2. Include columns to be encrypted
         'email',
         'first_name',
         'last_name',
