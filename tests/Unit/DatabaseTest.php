@@ -40,6 +40,14 @@ it('can match Sql syntex', function () {
 });
 
 it('can search encrypted data', function () {
-    dd(Testing::query()->whereEncryptedLike('value', 'hello')->first());
     $this->assertCount(1, Testing::query()->whereEncryptedLike('value', 'hello')->get());
+});
+
+it('can search OrWhereEncryptedLike', function () {
+    $this->assertCount(1,
+        Testing::query()
+            ->whereEncryptedLike('value', 'hi')
+            ->orWhereEncryptedLike('value', 'world')
+            ->get()
+    );
 });
