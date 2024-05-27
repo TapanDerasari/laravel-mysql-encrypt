@@ -4,7 +4,6 @@ namespace TapanDerasari\MysqlEncrypt\Tests;
 
 use Orchestra\Testbench\TestCase as Orchestra;
 use TapanDerasari\MysqlEncrypt\Providers\LaravelServiceProvider;
-use TapanDerasari\MysqlEncrypt\Tests\Models\Demo;
 
 class TestCase extends Orchestra
 {

@@ -91,17 +91,19 @@ Global scope `DecryptSelectScope` automatically booted in models using `Encrypta
 Schema::create('users', function (Blueprint $table) {
     $table->bigIncrements('id');
     $table->string('password');
+    $table->binary('first_name',300); // VARBINARY(300) for laravel 11.x and above versions
     $table->rememberToken();
     $table->timestamps();
 });
 
-// Once the table has been created, use ALTER TABLE to create VARBINARY
+// for laravel 10.x and below version, Once the table has been created, use ALTER TABLE to create VARBINARY
 // or BLOB types to store encrypted data.
 DB::statement('ALTER TABLE `users` ADD `first_name` VARBINARY(300)');
 DB::statement('ALTER TABLE `users` ADD `last_name` VARBINARY(300)');
 DB::statement('ALTER TABLE `users` ADD `email` VARBINARY(300)');
 DB::statement('ALTER TABLE `users` ADD `telephone` VARBINARY(50)');
 ```
+
 ## Implementing encryption for existing data
 
 For this you can create one command like
@@ -115,7 +117,6 @@ In this command you fetch existing table or model data without global scope `Dec
 You can refer the example, clicking on below Example button:
 
 <a href="https://github.com/TapanDerasari/laravel-mysql-encrypt/blob/master/existing_data_encryption.md" target="new"><img src="https://img.shields.io/badge/Example-green"></a>
-
 
 ## License
 

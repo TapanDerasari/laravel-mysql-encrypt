@@ -11,6 +11,7 @@ beforeEach(function () {
     $schema->create('testing', function (Blueprint $table) {
         $table->increments('id');
         $table->string('value');
+        //$table->binary('value',1024); //For Laravel 11.x and above vesions
         $table->timestamps();
     });
 
