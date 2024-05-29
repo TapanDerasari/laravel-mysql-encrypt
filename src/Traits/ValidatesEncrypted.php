@@ -27,7 +27,7 @@ trait ValidatesEncrypted
             $field = isset($parameters[1]) ? $parameters[1] : $attribute;
             $ignore = isset($parameters[2]) ? $parameters[2] : null;
 
-            $items = DB::select("SELECT count(*) as aggregate FROM `" . $parameters[0] . "` WHERE AES_DECRYPT(`" . $field . "`, '" . config("app.key") . "') LIKE '" . $value . "' COLLATE utf8mb4_general_ci" . ($ignore ? " AND id != " . $ignore : ''));
+            $items = DB::select("SELECT count(*) as aggregate FROM `" . $parameters[0] . "` WHERE AES_DECRYPT(`" . $field . "`, '" . config("mysql-encrypt.key") . "') LIKE '" . $value . "' COLLATE utf8mb4_general_ci" . ($ignore ? " AND id != " . $ignore : ''));
 
             return $items[0]->aggregate == 0;
         });
@@ -40,7 +40,7 @@ trait ValidatesEncrypted
 
             $field = isset($parameters[1]) ? $parameters[1] : $attribute;
 
-            $items = DB::select("SELECT count(*) as aggregate FROM `" . $parameters[0] . "` WHERE AES_DECRYPT(`" . $field . "`, '" . config("app.key") . "') LIKE '" . $value . "' COLLATE utf8mb4_general_ci");
+            $items = DB::select("SELECT count(*) as aggregate FROM `" . $parameters[0] . "` WHERE AES_DECRYPT(`" . $field . "`, '" . config("mysql-encrypt.key") . "') LIKE '" . $value . "' COLLATE utf8mb4_general_ci");
 
             return $items[0]->aggregate > 0;
         });
