@@ -36,7 +36,6 @@ it('can query encrypted data', function () {
 
 it('can match Sql syntex', function () {
     $query = Testing::query()->whereEncrypted('value', 'testing string')->toSql();
-    echo PHP_EOL . $query . PHP_EOL;
     expect($query)->toMatch('/(AES_DECRYPT\(([^\)]+)\))/');
 });
 
