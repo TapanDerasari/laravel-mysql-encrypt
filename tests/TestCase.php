@@ -24,7 +24,7 @@ class TestCase extends Orchestra
             'port' => '3306',
             'database' => 'testing',
             'username' => 'root',
-            'password' => '',
+            'password' => 'tops12345',
             'unix_socket' => '',
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',

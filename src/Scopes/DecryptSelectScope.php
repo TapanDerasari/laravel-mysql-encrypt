@@ -22,7 +22,9 @@ class DecryptSelectScope implements Scope
 
         $encryptable = $model->encryptable();
 
-        $columns = empty($columns) ? Schema::getColumnListing($model->getTable()) : $columns;
+        if (empty($columns) || $columns === ['*'] || $columns === '*') {
+            $columns = Schema::getColumnListing($model->getTable());
+        }
 
         $select = collect($columns)->map(function ($column) use ($encryptable) {
             return (in_array($column, $encryptable)) ? db_decrypt($column) : $column;
