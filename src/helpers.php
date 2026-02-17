@@ -12,14 +12,15 @@ if (!function_exists('db_encrypt')) {
     function db_encrypt($value)
     {
         $key = config('mysql-encrypt.key');
+        $quotedKey = DB::getPdo()->quote($key);
 
         if (is_null($value)) {
-            return DB::raw("AES_ENCRYPT(NULL, '{$key}')");
+            return DB::raw("AES_ENCRYPT(NULL, {$quotedKey})");
         }
 
-        $value = addslashes($value);
+        $quotedValue = DB::getPdo()->quote($value);
 
-        return DB::raw("AES_ENCRYPT('{$value}', '{$key}')");
+        return DB::raw("AES_ENCRYPT({$quotedValue}, {$quotedKey})");
     }
 }
 
@@ -33,56 +34,60 @@ if (!function_exists('db_decrypt')) {
      */
     function db_decrypt($column)
     {
-        $key = config('mysql-encrypt.key');
+        $key = DB::getPdo()->quote(config('mysql-encrypt.key'));
 
-        return DB::raw("AES_DECRYPT({$column}, '{$key}') AS '{$column}'");
+        return DB::raw("AES_DECRYPT({$column}, {$key}) AS `{$column}`");
     }
 }
 
 
 if (!function_exists('db_decrypt_string')) {
     /**
-     * Decrpyt value.
+     * Decrpyt value for WHERE clauses with parameterized binding.
      *
      * @param string $column
      * @param string $value
      * @param string $operator
-     * @return string
+     * @return array [$sql, $bindings]
      */
-    function db_decrypt_string($column, $value, $operator = 'LIKE')
+    function db_decrypt_string($column, $value, $operator = '=')
     {
-        return 'AES_DECRYPT(' . $column . ', "' . config("mysql-encrypt.key") . '") ' . $operator . ' "' . $value . '" COLLATE utf8mb4_general_ci';
+        $key = DB::getPdo()->quote(config('mysql-encrypt.key'));
+        $sql = "AES_DECRYPT({$column}, {$key}) {$operator} ? COLLATE utf8mb4_general_ci";
+        return [$sql, [$value]];
     }
 }
 
 
 if (!function_exists('db_decrypt_string_like')) {
     /**
-     * Decrpyt value.
+     * Decrpyt value for LIKE searches with parameterized binding.
      *
      * @param string $column
      * @param string $value
      * @param string $operator
-     * @return string
+     * @return array [$sql, $bindings]
      */
     function db_decrypt_string_like($column, $value, $operator = 'LIKE')
     {
-        return 'AES_DECRYPT(' . $column . ', "' . config("mysql-encrypt.key") . '") ' . $operator . ' "%' . $value . '%" COLLATE utf8mb4_general_ci';
+        $key = DB::getPdo()->quote(config('mysql-encrypt.key'));
+        $escaped = str_replace(['%', '_'], ['\\%', '\\_'], $value);
+        $sql = "AES_DECRYPT({$column}, {$key}) {$operator} ? COLLATE utf8mb4_general_ci";
+        return [$sql, ["%{$escaped}%"]];
     }
 }
 
 if (!function_exists('db_decrypt_string_sort')) {
     /**
-     * Decrpyt value.
+     * Decrpyt value for ORDER BY clauses.
      *
      * @param string $column
-     * @param string $value
-     * @param string $operator
+     * @param string $direction
      * @return string
      */
-    function db_decrypt_string_sort($column, $value)
+    function db_decrypt_string_sort($column, $direction)
     {
-        return 'AES_DECRYPT(' . $column . ', "' . config("mysql-encrypt.key") . '") ' . $value ;
+        $key = DB::getPdo()->quote(config('mysql-encrypt.key'));
+        return "AES_DECRYPT({$column}, {$key}) {$direction}";
     }
 }
-
