@@ -15,6 +15,12 @@ trait Encryptable
     }
 
     /**
+     * Holds plain-text values for encryptable columns so getAttribute()
+     * can return a string immediately after create/save (before a DB re-fetch).
+     */
+    protected array $plainEncryptable = [];
+
+    /**
      * @param string $key
      * @param mixed $value
      *
@@ -26,7 +32,24 @@ trait Encryptable
             return parent::setAttribute($key, $value);
         }
 
+        $this->plainEncryptable[$key] = $value;
+
         return parent::setAttribute($key, db_encrypt($value));
+    }
+
+    /**
+     * @param string $key
+     * @return mixed
+     */
+    public function getAttribute($key)
+    {
+        $value = parent::getAttribute($key);
+
+        if ($value instanceof \Illuminate\Database\Query\Expression && isset($this->plainEncryptable[$key])) {
+            return $this->plainEncryptable[$key];
+        }
+
+        return $value;
     }
 
     /**

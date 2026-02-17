@@ -120,3 +120,77 @@ it('retrieves all special character values correctly', function () {
     expect($values)->toContain('price^100');
     expect($values)->toContain('Tomáš');
 });
+
+it('returns a plain string (not an Expression) when accessing an encrypted attribute', function () {
+    $record = Testing::first();
+
+    // The value attribute must be a plain string, not a DB Expression object
+    expect($record->value)->toBeString();
+    expect($record->value)->toBe('testing string');
+});
+
+it('returns a plain string when selecting encrypted column explicitly', function () {
+    $record = Testing::query()->select(['id', 'value'])->first();
+
+    expect($record->value)->toBeString();
+    expect($record->value)->toBe('testing string');
+});
+
+it('returns a plain string immediately after create without re-fetching', function () {
+    $record = Testing::create(['value' => "O'Brien"]);
+
+    // Accessing value on the in-memory model (no re-fetch) must return a plain string
+    expect($record->value)->toBeString()->toBe("O'Brien");
+});
+
+// Encrypt + Decrypt round-trip tests for every scenario
+
+it('encrypts and decrypts a plain string', function () {
+    $record = Testing::create(['value' => 'testing string']);
+    expect(Testing::find($record->id)->value)->toBeString()->toBe('testing string');
+});
+
+it('encrypts and decrypts a string with a space', function () {
+    $record = Testing::create(['value' => 'hello world']);
+    expect(Testing::find($record->id)->value)->toBeString()->toBe('hello world');
+});
+
+it('encrypts and decrypts a string with an apostrophe (it\'s me)', function () {
+    $record = Testing::create(['value' => "it's me"]);
+    expect(Testing::find($record->id)->value)->toBeString()->toBe("it's me");
+});
+
+it('encrypts and decrypts a string with a single quote (O\'Brien)', function () {
+    $record = Testing::create(['value' => "O'Brien"]);
+    expect(Testing::find($record->id)->value)->toBeString()->toBe("O'Brien");
+});
+
+it('encrypts and decrypts a string with double quotes', function () {
+    $record = Testing::create(['value' => 'say "hello"']);
+    expect(Testing::find($record->id)->value)->toBeString()->toBe('say "hello"');
+});
+
+it('encrypts and decrypts a string with a backslash', function () {
+    $record = Testing::create(['value' => 'back\\slash']);
+    expect(Testing::find($record->id)->value)->toBeString()->toBe('back\\slash');
+});
+
+it('encrypts and decrypts a string with LIKE wildcard characters', function () {
+    $record = Testing::create(['value' => '100%_done']);
+    expect(Testing::find($record->id)->value)->toBeString()->toBe('100%_done');
+});
+
+it('encrypts and decrypts a string with emoji and multibyte characters', function () {
+    $record = Testing::create(['value' => 'emoji 😀🎉']);
+    expect(Testing::find($record->id)->value)->toBeString()->toBe('emoji 😀🎉');
+});
+
+it('encrypts and decrypts a string with a caret', function () {
+    $record = Testing::create(['value' => 'price^100']);
+    expect(Testing::find($record->id)->value)->toBeString()->toBe('price^100');
+});
+
+it('encrypts and decrypts a string with diacritics', function () {
+    $record = Testing::create(['value' => 'Tomáš']);
+    expect(Testing::find($record->id)->value)->toBeString()->toBe('Tomáš');
+});
