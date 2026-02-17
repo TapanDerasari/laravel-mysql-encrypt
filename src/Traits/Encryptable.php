@@ -48,8 +48,9 @@ trait Encryptable
      */
     public function scopeWhereEncrypted($query, $column, $value)
     {
+        [$sql, $bindings] = db_decrypt_string($column, $value);
         /** @var Builder $query */
-        return $query->whereRaw(db_decrypt_string($column, $value));
+        return $query->whereRaw($sql, $bindings);
     }
 
     /**
@@ -63,8 +64,9 @@ trait Encryptable
      */
     public function scopeWhereNotEncrypted($query, $column, $value)
     {
+        [$sql, $bindings] = db_decrypt_string($column, $value, '!=');
         /** @var Builder $query */
-        return $query->whereRaw(db_decrypt_string($column, $value, 'NOT LIKE'));
+        return $query->whereRaw($sql, $bindings);
     }
 
     /**
@@ -78,8 +80,9 @@ trait Encryptable
      */
     public function scopeOrWhereEncrypted($query, $column, $value)
     {
+        [$sql, $bindings] = db_decrypt_string($column, $value);
         /** @var Builder $query */
-        return $query->orWhereRaw(db_decrypt_string($column, $value));
+        return $query->orWhereRaw($sql, $bindings);
     }
 
     /**
@@ -93,8 +96,9 @@ trait Encryptable
      */
     public function scopeOrWhereNotEncrypted($query, $column, $value)
     {
+        [$sql, $bindings] = db_decrypt_string($column, $value, '!=');
         /** @var Builder $query */
-        return $query->orWhereRaw(db_decrypt_string($column, $value, 'NOT LIKE'));
+        return $query->orWhereRaw($sql, $bindings);
     }
 
     /**
@@ -109,7 +113,7 @@ trait Encryptable
     public function scopeOrderByEncrypted($query, $column, $direction)
     {
         /** @var Builder $query */
-        return $query->orderByRaw(db_decrypt_string($column, $direction, ''));
+        return $query->orderByRaw(db_decrypt_string_sort($column, $direction));
     }
 
 
@@ -124,8 +128,9 @@ trait Encryptable
      */
     public function scopeWhereEncryptedLike($query, $column, $value)
     {
+        [$sql, $bindings] = db_decrypt_string_like($column, $value);
         /** @var Builder $query */
-        return $query->whereRaw(db_decrypt_string_like($column, $value));
+        return $query->whereRaw($sql, $bindings);
     }
 
 
@@ -140,8 +145,9 @@ trait Encryptable
      */
     public function scopeOrWhereEncryptedLike($query, $column, $value)
     {
+        [$sql, $bindings] = db_decrypt_string_like($column, $value);
         /** @var Builder $query */
-        return $query->orWhereRaw(db_decrypt_string_like($column, $value));
+        return $query->orWhereRaw($sql, $bindings);
     }
 
     /**
