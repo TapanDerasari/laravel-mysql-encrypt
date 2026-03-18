@@ -5,6 +5,13 @@
 Laravel database encryption at database side using native AES_DECRYPT and AES_ENCRYPT functions.
 Automatically encrypt and decrypt fields in your Models.
 
+## Version Compatibility
+
+| Package Version | Laravel | PHP  |
+|-----------------|---------|------|
+| 3.x             | 13.x    | ^8.3 |
+| 1.x             | 10–12   | ^8.0 |
+
 ## Install
 
 ### 1. Composer
@@ -15,17 +22,8 @@ composer require tapanderasari/laravel-mysql-encrypt
 
 ### 2. Publish config (optional)
 
-`Laravel`
-
 ```bash
 php artisan vendor:publish --provider="TapanDerasari\MysqlEncrypt\Providers\LaravelServiceProvider"
-```
-
-`Lumen`
-
-```bash
-mkdir -p config
-cp vendor/tapanderasari/laravel-mysql-encrypt/config/config.php config/mysql-encrypt.php
 ```
 
 ### 3. Set encryption key in `.env` file
@@ -57,12 +55,29 @@ class User extends Model
 }
 ```
 
+## Schema
+
+Encrypted columns must use `VARBINARY` (or `BINARY`/`BLOB`) in MySQL, not `VARCHAR`.
+
+```php
+Schema::create('users', function (Blueprint $table) {
+    $table->bigIncrements('id');
+    $table->string('password');
+    $table->binary('first_name', 300);  // VARBINARY(300)
+    $table->binary('last_name', 300);
+    $table->binary('email', 300);
+    $table->binary('telephone', 50);
+    $table->rememberToken();
+    $table->timestamps();
+});
+```
+
 ## Validators
 
 `unique_encrypted`
 
 ```
-unique_encrypted:<table>,<field(optional)>
+unique_encrypted:<table>,<field(optional)>,<ignore_id(optional)>
 ```
 
 `exists_encrypted`
@@ -73,35 +88,41 @@ exists_encrypted:<table>,<field(optional)>
 
 ## Scopes
 
-Custom Local scopes available:
+A global scope `DecryptSelectScope` is automatically applied to models using the `Encryptable` trait. It rewrites SELECT queries to wrap encrypted columns with `AES_DECRYPT()`.
 
-`whereEncrypted`
-`whereNotEncrypted`
-`orWhereEncrypted`
-`orWhereNotEncrypted`
-`orderByEncrypted`
-`whereEncryptedLike`
-`scopeOrderByEncryptedSort`
+The following local scopes are available:
 
-Global scope `DecryptSelectScope` automatically booted in models using `Encryptable` trait.
-
-## Schema columns to support encrypted data
+### Exact match
 
 ```php
-Schema::create('users', function (Blueprint $table) {
-    $table->bigIncrements('id');
-    $table->string('password');
-    $table->binary('first_name',300); // VARBINARY(300) for laravel 11.x and above versions
-    $table->rememberToken();
-    $table->timestamps();
-});
+User::whereEncrypted('email', 'john@example.com')->first();
+User::whereNotEncrypted('email', 'john@example.com')->get();
+```
 
-// for laravel 10.x and below version, Once the table has been created, use ALTER TABLE to create VARBINARY
-// or BLOB types to store encrypted data.
-DB::statement('ALTER TABLE `users` ADD `first_name` VARBINARY(300)');
-DB::statement('ALTER TABLE `users` ADD `last_name` VARBINARY(300)');
-DB::statement('ALTER TABLE `users` ADD `email` VARBINARY(300)');
-DB::statement('ALTER TABLE `users` ADD `telephone` VARBINARY(50)');
+### OR conditions
+
+```php
+User::whereEncrypted('email', 'a@b.com')
+    ->orWhereEncrypted('email', 'c@d.com')
+    ->get();
+
+User::whereNotEncrypted('email', 'a@b.com')
+    ->orWhereNotEncrypted('email', 'c@d.com')
+    ->get();
+```
+
+### LIKE search
+
+```php
+User::whereEncryptedLike('first_name', 'John')->get();
+User::orWhereEncryptedLike('first_name', 'Jane')->get();
+```
+
+### Ordering
+
+```php
+User::orderByEncrypted('first_name', 'asc')->get();
+User::orderByEncryptedSort('last_name', 'desc')->get();
 ```
 
 ## Implementing encryption for existing data

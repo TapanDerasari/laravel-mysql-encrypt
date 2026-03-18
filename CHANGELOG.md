@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [v3.0.0] - 2026-03-18
+
+### Changed
+- **Breaking:** Minimum PHP version raised to 8.3 (from 8.0)
+- **Breaking:** Now requires Laravel 13 (`illuminate/database` and `illuminate/support` `^13.0`)
+- Updated `orchestra/testbench` to `^11.0`
+- Updated `pestphp/pest` to `^4.0` and PHPUnit to `^12.0`
+
+### Removed
+- `LumenServiceProvider` — Lumen has been EOL since Laravel 10
+
+---
+
 ## [v1.0.9] - 2026-02-17
 
 ### Fixed
