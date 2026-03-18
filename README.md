@@ -10,7 +10,7 @@ Automatically encrypt and decrypt fields in your Models.
 | Package Version | Laravel | PHP  |
 |-----------------|---------|------|
 | 3.x             | 13.x    | ^8.3 |
-| 1.x – 2.x      | 10–12   | ^8.0 |
+| 1.x             | 10–12   | ^8.0 |
 
 ## Install
 
